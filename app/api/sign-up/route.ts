@@ -11,5 +11,6 @@ export async function POST(request: Request) {
         body: dataObj
     })
 
-    return Response.json(apiResponse)
+    const jsonResponse = await apiResponse.json()
+    return Response.json(jsonResponse)
 }
