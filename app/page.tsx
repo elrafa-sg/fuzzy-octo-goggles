@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { LocalStorage } from "@/helpers/localStorage";
+import { useEffect } from "react";
+import { useToast } from "./_hooks/useToast";
 
 type Inputs = {
   email: string,
@@ -20,6 +22,7 @@ const userFormSchema: z.ZodType<Inputs> = z.object({
 
 const IndexPage = () => {
   const router = useRouter()
+  const { setToastData, showToast } = useToast()
 
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
     resolver: zodResolver(userFormSchema)
@@ -29,8 +32,6 @@ const IndexPage = () => {
 
   async function signIn(data: Inputs) {
     const dataobj = JSON.stringify({ email: data.email, password: data.password })
-
-    console.log('\n\ndataobj', dataobj)
 
     const res = await fetch('/api/sign-in',
       {
@@ -43,8 +44,7 @@ const IndexPage = () => {
       LocalStorage.set('userData', userData)
       router.push('/home')
     }
-    console.log('res', res)
-    return
+
     //router.push('/home')
   }
 

@@ -31,19 +31,15 @@ const SignUpPage = () => {
     async function signUp(data: Inputs) {
         const dataobj = JSON.stringify({ email: data.email, password: data.password, name: data.name })
 
-        console.log('\n\ndataobj', dataobj)
-
         const res = await fetch('/api/sign-up',
             {
                 method: 'POST',
                 body: JSON.stringify(dataobj)
             })
 
-        const jsonResponse = await res.json()
-        console.log('jsonResponse', jsonResponse)
-
-        local
-        //router.push('/home')
+        if (res.status === 200) {
+            router.push('/sign-in')
+        }
     }
 
     return (
