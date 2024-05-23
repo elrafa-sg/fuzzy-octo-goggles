@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useForm, SubmitHandler } from 'react-hook-form'
 
+import { useToast } from "../_hooks/useToast";
+
 type Inputs = {
     email: string,
     password: string,
@@ -21,6 +23,7 @@ const userFormSchema: z.ZodType<Inputs> = z.object({
 
 const SignUpPage = () => {
     const router = useRouter()
+    const { setToastData, showToast } = useToast()
 
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
         resolver: zodResolver(userFormSchema)
@@ -37,8 +40,17 @@ const SignUpPage = () => {
                 body: JSON.stringify(dataobj)
             })
 
-        if (res.status === 200) {
-            router.push('/sign-in')
+        if (res.status === 201) {
+            setToastData({ color: 'green', message: 'Usuário criado com sucesso!' })
+            showToast()
+            setTimeout(() => {
+                router.push('/')
+            }, 3000)
+        }
+        else {
+            const userData = await res.json()
+            setToastData({ color: 'red', message: userData.message })
+            showToast()
         }
     }
 

@@ -5,7 +5,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { LocalStorage } from "@/helpers/localStorage";
+import { LocalStorage } from './_helpers/localStorage'
 import { useEffect } from "react";
 import { useToast } from "./_hooks/useToast";
 
@@ -39,13 +39,15 @@ const IndexPage = () => {
         body: JSON.stringify(dataobj)
       })
 
+    const userData = await res.json()
     if (res.status === 200) {
-      const userData = await res.json()
       LocalStorage.set('userData', userData)
       router.push('/home')
     }
-
-    //router.push('/home')
+    else {
+      setToastData({ color: 'red', message: userData.message })
+      showToast()
+    }
   }
 
   return (

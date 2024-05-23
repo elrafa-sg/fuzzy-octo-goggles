@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server"
+
 const SIGN_UP_URL = "http://localhost:3001/user/sign-up"
 
 export async function POST(request: Request) {
@@ -11,6 +13,6 @@ export async function POST(request: Request) {
         body: dataObj
     })
 
-    const jsonResponse = await apiResponse.json()
-    return Response.json(jsonResponse)
+    let jsonResponse = await apiResponse.json()
+    return new NextResponse(JSON.stringify(jsonResponse), { status: apiResponse.status })
 }
