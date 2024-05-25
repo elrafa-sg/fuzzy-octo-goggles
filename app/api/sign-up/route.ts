@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const SIGN_UP_URL = "http://localhost:3001/user/sign-up"
+const SIGN_UP_URL = `${process.env.API_URL}/user/sign-up`
 
 export async function POST(request: Request) {
     const dataObj = await request.json()

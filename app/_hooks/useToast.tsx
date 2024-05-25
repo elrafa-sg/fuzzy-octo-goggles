@@ -11,7 +11,7 @@ export const useToast = () => {
   return useContext(ToastContext);
 };
 
-export const ToastProvider = ({ children }) => {
+export const ToastProvider = ({ children }: any) => {
   const [_toastData, _setToastData] = useState({
     color: '',
     message: '',
@@ -32,7 +32,7 @@ export const ToastProvider = ({ children }) => {
     setVisible(false);
   }, []);
 
-  const setToastData = useCallback((data) => {
+  const setToastData = useCallback((data: any) => {
     _setToastData((prevData) => ({ ...prevData, ...data }));
   }, []);
 
