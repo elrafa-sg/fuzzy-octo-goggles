@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useContext, createContext } from 'react';
 import { Toast } from '../_components/Toast';
+import { AlertProps } from '@mui/material';
 
 const ToastContext = createContext({
   showToast: () => { },
   hideToast: () => { },
-  setToastData: (data: { color: string, message: string, timeout?: number }) => { },
+  setToastData: (data: AlertProps) => { },
 });
 
 export const useToast = () => {
@@ -12,21 +13,15 @@ export const useToast = () => {
 };
 
 export const ToastProvider = ({ children }: any) => {
-  const [_toastData, _setToastData] = useState({
-    color: '',
-    message: '',
-    timeout: 3000, // valor padrão
-  });
+  const [_toastData, _setToastData] = useState<AlertProps>();
   const [visible, setVisible] = useState(false);
 
   const showToast = useCallback(() => {
     setVisible(true);
-    if (_toastData.timeout > 0) {
-      setTimeout(() => {
-        setVisible(false);
-      }, _toastData.timeout);
-    }
-  }, [_toastData]);
+    setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  }, []);
 
   const hideToast = useCallback(() => {
     setVisible(false);
@@ -38,8 +33,8 @@ export const ToastProvider = ({ children }: any) => {
 
   return (
     <ToastContext.Provider value={{ showToast, hideToast, setToastData }}>
+      {visible && <Toast severity={_toastData?.severity}>{_toastData?.children}</Toast>}
       {children}
-      {visible && <Toast color={_toastData.color} message={_toastData.message} />}
-    </ToastContext.Provider>
+    </ToastContext.Provider >
   );
 };

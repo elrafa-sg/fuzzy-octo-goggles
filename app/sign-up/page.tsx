@@ -8,6 +8,10 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 
 import { useToast } from "../_hooks/useToast";
 
+import Paper from '@mui/material/Paper'
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+
 type Inputs = {
     email: string,
     password: string,
@@ -15,9 +19,9 @@ type Inputs = {
 }
 
 const userFormSchema: z.ZodType<Inputs> = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    name: z.string().min(5)
+    email: z.string().trim().toLowerCase().email({ message: "Email inválido" }),
+    password: z.string().trim().min(8, { message: "Sua senha deve conter no mínimo 8 caracteres." }),
+    name: z.string().trim().min(1, { message: 'O campo nome é obrigatório.' })
 });
 
 
@@ -41,7 +45,7 @@ const SignUpPage = () => {
             })
 
         if (res.status === 201) {
-            setToastData({ color: 'green', message: 'Usuário criado com sucesso!' })
+            setToastData({ severity: 'success', children: 'Usuário criado com sucesso!' })
             showToast()
             setTimeout(() => {
                 router.push('/')
@@ -49,64 +53,38 @@ const SignUpPage = () => {
         }
         else {
             const userData = await res.json()
-            setToastData({ color: 'red', message: userData.message })
+            setToastData({ severity: 'error', children: userData.message })
             showToast()
         }
     }
 
     return (
-        <div className="h-screen w-screen flex flex-col items-center pt-28">
-            <form className="flex flex-col gap-4 bg-white p-4 shadow-sm w-80 rounded-md"
-                onSubmit={handleSubmit(onSubmit)}
-                id="formUsuario"
-            >
-                <div className='flex flex-col'>
-                    <div className="flex items-center justify-between">
-                        <label className="text-black font-bold"
-                            htmlFor="email"
-                        >
-                            Email:</label>
-                        <input {...register('email')} name="email" type="email" className="bg-slate-200 text-black p-1 outline-none" />
+        <div className="h-screen w-screen flex flex-col items-center pt-28 bg-slate-100">
+            <Paper elevation={1} className="bg-white p-4 w-80">
+                <form className="flex flex-col gap-4"
+                    onSubmit={handleSubmit(onSubmit)}
+                    id="formUsuario"
+                >
+                    <TextField fullWidth label="Email"  {...register('email')} type="email"
+                        helperText={errors.email?.message} error={errors.email != null} />
 
-                    </div>
+                    <TextField fullWidth label="Senha"  {...register('password')} type="password"
+                        helperText={errors.password?.message} error={errors.password != null} />
 
-                    <legend className='font-bold text-red-400 text-right'>{errors.email?.message && <p>{errors.email?.message}</p>}</legend>
-                </div>
-
-                <div className='flex flex-col'>
-                    <div className="flex items-center justify-between">
-                        <label className="text-black font-bold"
-                            htmlFor="password"
-                        >
-                            Senha:</label>
-                        <input {...register('password')} name="password" type="password" className="bg-slate-200 text-black p-1 outline-none" />
-                    </div>
-                    <legend className='font-bold text-red-400 text-right'>{errors.password?.message && <p>{errors.password?.message}</p>}</legend>
-                </div>
+                    <TextField fullWidth label="Nome"  {...register('name')} type="text"
+                        helperText={errors.name?.message} error={errors.name != null} />
 
 
-                <div className='flex flex-col'>
-                    <div className="flex items-center justify-between">
-                        <label className="text-black font-bold"
-                            htmlFor="name"
-                        >
-                            Nome:</label>
-                        <input {...register('name')} name="name" type="text" className="bg-slate-200 text-black p-1 outline-none" />
-                    </div>
+                    <Button form="formUsuario" type='submit' variant="contained">
+                        CADASTRAR
+                    </Button>
 
-                    <legend className='font-bold text-red-400 text-right'>{errors.name?.message && <p>{errors.name?.message}</p>}</legend>
-                </div>
+                    <Button onClick={() => router.push('/')} variant="contained" color="error">
+                        CANCELAR
+                    </Button>
 
-                <button form="formUsuario" type='submit'
-                    className="p-2 rounded text-white font-bold bg-blue-300 outline-none">
-                    CADASTRAR
-                </button>
-
-                <button onClick={() => router.push('/')} className="p-2 rounded text-white font-bold bg-red-300 outline-none">
-                    CANCELAR
-                </button>
-
-            </form>
+                </form>
+            </Paper>
         </div>
     )
 }
