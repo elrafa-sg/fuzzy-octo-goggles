@@ -21,9 +21,6 @@ const Map = () => {
             (err) => setPermissionDenied(err.message === 'User denied Geolocation'),
             { timeout: 5000, enableHighAccuracy: true }
         )
-
-        navigator.permissions.query({ name: 'geolocation' })
-            .then(console.log)
     }, [])
 
     if (permissionDenied) {
