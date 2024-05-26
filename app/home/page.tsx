@@ -33,7 +33,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="h-screen w-screen flex">
+    <div className="h-screen w-screen flex bg-slate-100">
       <Drawer open={true}>
         <div className="h-full min-w-64 p-2 flex flex-col justify-between">
 
