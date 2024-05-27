@@ -20,7 +20,7 @@ export default function HomePage() {
   const router = useRouter()
   const [userData, setUserData] = useState<{ email: string, name: string, accessToken: string }>()
 
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))

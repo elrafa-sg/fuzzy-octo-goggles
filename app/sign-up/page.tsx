@@ -7,10 +7,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 import { useToast } from "../_hooks/useToast";
+import { useLoading } from "../_hooks/useLoading";
 
-import Paper from '@mui/material/Paper'
+import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+import { useEffect, useState } from "react";
 
 type Inputs = {
     email: string,
@@ -28,6 +35,8 @@ const userFormSchema: z.ZodType<Inputs> = z.object({
 const SignUpPage = () => {
     const router = useRouter()
     const { setToastData, showToast } = useToast()
+    const [showPassword, setShowPassword] = useState(false)
+    const { setLoading } = useLoading()
 
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
         resolver: zodResolver(userFormSchema)
@@ -36,6 +45,7 @@ const SignUpPage = () => {
     const onSubmit: SubmitHandler<Inputs> = (data) => signUp(data)
 
     async function signUp(data: Inputs) {
+        setLoading(true)
         const dataobj = JSON.stringify({ email: data.email, password: data.password, name: data.name })
 
         const res = await fetch('/api/sign-up',
@@ -43,18 +53,19 @@ const SignUpPage = () => {
                 method: 'POST',
                 body: JSON.stringify(dataobj)
             })
-
         if (res.status === 201) {
             setToastData({ severity: 'success', children: 'Usuário criado com sucesso!' })
             showToast()
             setTimeout(() => {
                 router.push('/')
+                setLoading(false)
             }, 3000)
         }
         else {
             const userData = await res.json()
             setToastData({ severity: 'error', children: userData.message })
             showToast()
+            setLoading(false)
         }
     }
 
@@ -68,8 +79,21 @@ const SignUpPage = () => {
                     <TextField fullWidth label="Email"  {...register('email')} type="email"
                         helperText={errors.email?.message} error={errors.email != null} />
 
-                    <TextField fullWidth label="Senha"  {...register('password')} type="password"
-                        helperText={errors.password?.message} error={errors.password != null} />
+                    <TextField fullWidth label="Senha" type={showPassword ? 'text' : 'password'}
+                        {...register('password')}
+                        helperText={errors.password?.message}
+                        error={errors.password != null}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="start">
+                                    <IconButton
+                                        onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
 
                     <TextField fullWidth label="Nome"  {...register('name')} type="text"
                         helperText={errors.name?.message} error={errors.name != null} />
