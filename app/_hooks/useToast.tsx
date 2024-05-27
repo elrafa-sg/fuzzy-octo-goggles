@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext, createContext } from 'react';
 import { Toast } from '../_components/Toast';
-import { AlertProps } from '@mui/material';
+import { AlertProps } from '@mui/material/Alert';
 
 const ToastContext = createContext({
   showToast: () => { },

@@ -5,6 +5,7 @@ import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import { ToastProvider } from './_hooks/useToast'
+import { LoadingProvider } from "./_hooks/useLoading";
 
 import theme from '../theme'
 
@@ -21,7 +22,9 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <ToastProvider>
-              {children}
+              <LoadingProvider>
+                {children}
+              </LoadingProvider>
             </ToastProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

@@ -6,8 +6,8 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import { useState, useEffect } from "react"
 import { LatLngExpression } from "leaflet"
 
-import CircularProgress from "@mui/material/CircularProgress"
-import { Typography } from "@mui/material"
+import Typography from "@mui/material/Typography"
+import { Loading } from "../Loading"
 
 const Map = () => {
     const [position, setPosition] = useState<LatLngExpression | undefined>()
@@ -41,10 +41,7 @@ const Map = () => {
                     />
                 </MapContainer>
             )
-            : <div className="w-full h-full flex flex-col justify-center items-center gap-2 animate-pulse">
-                <CircularProgress />
-                <Typography sx={{ fontWeight: 'bold' }} className="text-black">Carregando mapa...</Typography>
-            </div>
+            : <Loading />
     )
 }
 

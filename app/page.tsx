@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { LocalStorage } from './_helpers/localStorage'
 import { useToast } from "./_hooks/useToast";
+import { useLoading } from "./_hooks/useLoading";
 
 import Paper from '@mui/material/Paper'
 import TextField from "@mui/material/TextField";
@@ -34,7 +35,7 @@ const IndexPage = () => {
   const router = useRouter()
   const { setToastData, showToast } = useToast()
   const [showPassword, setShowPassword] = useState(false)
-
+  const { setLoading } = useLoading()
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
     resolver: zodResolver(userFormSchema)
   })
@@ -42,6 +43,7 @@ const IndexPage = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => signIn(data)
 
   async function signIn(data: Inputs) {
+    setLoading(true)
     const dataobj = JSON.stringify({ email: data.email, password: data.password })
 
     const res = await fetch('/api/sign-in',
@@ -59,6 +61,10 @@ const IndexPage = () => {
       setToastData({ severity: 'error', children: userData.message })
       showToast()
     }
+
+    setTimeout(() => {
+      setLoading(false)
+    }, 500)
   }
 
   return (
